@@ -7,6 +7,7 @@
             Lista de {{ $lista->type === 'character' ? 'personajes' : 'episodios' }}
             @if ($lista->description) · {{ $lista->description }} @endif
         </p>
+        <a href="{{ route('listas.edit', $lista->id) }}" class="text-sm underline">Editar</a>
     </div>
 
     <ul class="bg-white rounded shadow divide-y">

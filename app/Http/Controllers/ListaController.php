@@ -77,10 +77,40 @@ public function removeItem(Request $request, int $lista, int $item)
     return back()->with('success', 'Quitado de "'.$lista->name.'".');
 }
 
+public function edit(Request $request, int $lista)
+{
+    $lista = $request->user()->listas()->findOrFail($lista);
+
+    return view('listas.edit', compact('lista'));
+}
+
+public function update(Request $request, int $lista)
+{
+    $lista = $request->user()->listas()->findOrFail($lista);
+
+    $data = $request->validate([
+        'name' => [
+            'required', 'string', 'max:100',
+            Rule::unique('listas')
+                ->where('user_id', $request->user()->id)
+                ->ignore($lista->id), //valida que el nombre sea único para el usuario con sesión, ignorando la lista actual
+        ],
+        'description' => ['nullable', 'string', 'max:255'],
+    ]);
+
+    //No se valida type porque no se puede cambiar, y $fillable incluye type, pero como no lo recibimos de $data, nunca se modifica. Mantiene la regla de un único tipo.
+
+    $lista->update($data);
+
+    return redirect()->route('listas.show', $lista->id)->with('success', 'Lista actualizada.');
+}
+
     public function destroy(Request $request, int $lista)
     {
         $request->user()->listas()->findOrFail($lista)->delete(); //busca la lista del usuario con sesión y la elimina. Si no existe, lanza un 404.
 
         return redirect()->route('listas.index')->with('success', 'Lista eliminada.');
     }
+
+    
 }
