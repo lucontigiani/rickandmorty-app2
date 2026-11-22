@@ -42,6 +42,8 @@
         </div>
     </div>
 
+    <x-add-to-list type="character" :item-id="$character->id" />
+
     <h2 class="text-xl font-bold mt-8 mb-3">Episodios ({{ $character->episodes->count() }})</h2>
     <ul class="bg-white rounded shadow divide-y">
         @forelse ($character->episodes as $episode)

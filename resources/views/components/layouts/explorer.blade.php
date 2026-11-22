@@ -18,11 +18,14 @@
 
             <div class="flex items-center gap-4">
                 @auth
-                    <span class="text-sm text-gray-600">{{ Auth::user()->name }}</span>
+                    <a href="{{ route('profile.edit') }}" class="text-sm text-gray-600 hover:underline">
+    {{ Auth::user()->name }}
+</a>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button class="hover:underline">Salir</button>
                     </form>
+                    <a href="{{ route('listas.index') }}" class="hover:underline">Mis listas</a>
                 @endauth
 
                 @guest
@@ -34,6 +37,9 @@
     </nav>
 
     <main class="max-w-6xl mx-auto px-4 py-6">
+        @if (session('success'))
+    <div class="bg-green-100 text-green-800 rounded px-4 py-2 mb-4">{{ session('success') }}</div>
+@endif
         {{ $slot }}
     </main>
 </body>

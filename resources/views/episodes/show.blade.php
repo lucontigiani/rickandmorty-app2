@@ -35,4 +35,7 @@
             <p class="col-span-full text-gray-600">Sin personajes registrados.</p>
         @endforelse
     </div>
+
+    <x-add-to-list type="episode" :item-id="$episode->id" />
+    
 </x-layouts.explorer>
