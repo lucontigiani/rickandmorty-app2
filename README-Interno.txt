@@ -6,94 +6,131 @@ Aplicación web para explorar personajes, episodios y ubicaciones de Rick and Mo
 construida sobre la base de datos del TP1. Los usuarios registrados pueden crear listas
 personalizadas.
 
-## Estado actual
+# Guía de prueba para tu compañero
 
-- [x] Explorador público de personajes y episodios (paginación, filtros, detalle)
-- [x] Registro e inicio de sesión (Laravel Breeze)
-- [x] Modelo de datos completo (migraciones) y carga inicial (seeder)
-- [ ] Explorador de ubicaciones
-- [ ] Gestión de listas personalizadas
+Antes de mandársela, un paso previo tuyo: como el repositorio es **privado**, tu compañero tiene que tener acceso. En GitHub: repositorio → **Settings** → **Collaborators** → **Add people**, y poné su usuario. Le llega una invitación por mail que debe aceptar.
 
-## Requisitos
+Después le podés pasar este mensaje tal cual:
+
+---
+
+## Probar el proyecto Rick & Morty Explorer
+
+**Objetivo:** instalar el proyecto desde cero, como lo haría quien lo corrige, y avisarme si algo falla. Usá una carpeta nueva y una base de datos nueva, así no se mezcla con nada tuyo.
+
+### Requisitos
 
 - PHP 8.2 o superior
 - Composer
 - Node.js y npm
-- MySQL o MariaDB (por ejemplo, el de XAMPP)
+- MySQL o MariaDB encendido (por ejemplo, el de XAMPP)
 
-## Instalación
+Comprobalo con `php -v`, `composer -V`, `node -v` y `npm -v`. Los cuatro tienen que mostrar una versión.
 
-1. Clonar el repositorio e ingresar a la carpeta:
-
-   ```bash
-   git clone https://github.com/USUARIO/rickandmorty-app2.git
-   cd rickandmorty-app2
-   ```
-
-2. Instalar dependencias:
-
-   ```bash
-   composer install
-   npm install
-   ```
-
-3. Crear el archivo de configuración y la clave de la aplicación:
-
-   ```bash
-   cp .env.example .env
-   php artisan key:generate
-   ```
-
-4. Crear una base de datos vacía en MySQL:
-
-   ```sql
-   CREATE DATABASE rickandmorty_app2 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-   ```
-
-5. Revisar en `.env` los datos de conexión (`DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`).
-   Con XAMPP por defecto el usuario es `root` y la contraseña está vacía.
-
-6. Crear las tablas y cargar los datos iniciales:
-
-   ```bash
-   php artisan migrate --seed
-   ```
-
-   Esto carga 826 personajes, sus episodios y ubicaciones desde
-   `database/seeders/data/datos.sql` (datos del TP1). No requiere internet.
-
-## Ejecución
-
-Abrir dos terminales en la carpeta del proyecto:
+### 1. Clonar e instalar
 
 ```bash
-npm run dev          # compila estilos; dejar corriendo
-php artisan serve    # servidor en http://localhost:8000
+git clone https://github.com/TU_USUARIO/rickandmorty-app2.git
+cd rickandmorty-app2
+composer install
+npm install
 ```
 
-Con Laravel Herd no hace falta `php artisan serve`: el sitio queda en
-`http://<nombre-de-la-carpeta>.test`.
+### 2. Configuración
 
-## Qué probar
+Crear el archivo `.env` a partir del de ejemplo y generar la clave:
 
-| URL | Descripción |
+```bash
+cp .env.example .env          # Windows (cmd): copy .env.example .env
+php artisan key:generate
+```
+
+Abrir `.env` y comprobar que estas líneas coincidan con tu MySQL:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=rickandmorty_app2
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+Con XAMPP, el usuario es `root` y la contraseña está vacía. Si tu MySQL tiene contraseña, ponela ahí.
+
+### 3. Crear la base de datos vacía
+
+En MySQL Workbench, phpMyAdmin o la terminal de MySQL:
+
+```sql
+CREATE DATABASE rickandmorty_app2 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+
+### 4. Crear las tablas y cargar los datos
+
+```bash
+php artisan migrate --seed
+```
+
+Tienen que aparecer todas las migraciones con `DONE` y al final `RickAndMortySeeder ... DONE`. No hace falta internet para este paso.
+
+### 5. Compilar estilos y arrancar
+
+```bash
+npm run build
+php artisan serve
+```
+
+Abrir `http://localhost:8000`.
+
+### 6. Qué probar
+
+Marcá cada punto como bien o mal:
+
+**Sin iniciar sesión**
+- [ ] El inicio muestra los totales de personajes, episodios y ubicaciones (826 personajes).
+- [ ] `/personajes`: 20 por página, paginación, búsqueda por nombre y filtro por estado.
+- [ ] El detalle de un personaje muestra origen, ubicación y episodios, y el origen y la ubicación son enlaces.
+- [ ] `/episodios` y `/ubicaciones`: listado paginado, filtros y detalle con enlaces entre sí.
+- [ ] No aparecen botones de "Agregar a lista" ni "Mis listas".
+- [ ] `/listas` redirige a `/login`.
+
+**Con sesión**
+- [ ] Registrar un usuario nuevo en `/register`; después del registro se llega al inicio.
+- [ ] Cerrar sesión y volver a ingresar.
+- [ ] Crear una lista de personajes y una de episodios.
+- [ ] Crear otra con el mismo nombre: debe mostrar un error de validación.
+- [ ] Desde el detalle de un personaje, agregarlo a una lista; agregarlo dos veces no lo duplica.
+- [ ] En un personaje solo aparecen las listas de personajes (y en un episodio, las de episodios).
+- [ ] Abrir la lista, entrar a un elemento desde ella y quitarlo.
+- [ ] Editar el nombre de una lista y eliminar una lista.
+
+**Seguridad**
+- [ ] Con un segundo usuario (ventana privada), abrir la lista de otro usuario por URL (por ejemplo `/listas/1`): debe dar **404**.
+
+### 7. Qué me tenés que informar
+
+Para cada fallo: qué hiciste, qué esperabas, qué pasó, y el **mensaje de error completo** (de la terminal o de la pantalla). Una captura ayuda.
+
+Si algo falla en la instalación, decime en qué paso y qué versión de PHP y de Composer tenés.
+
+---
+
+## Problemas que puede encontrar
+
+| Síntoma | Causa probable |
 |---|---|
-| `/personajes` | Listado paginado con búsqueda por nombre y filtro por estado |
-| `/personajes/{id}` | Detalle con origen, ubicación y episodios |
-| `/episodios` | Listado paginado con filtro por temporada |
-| `/episodios/{id}` | Detalle con los personajes que aparecen |
-| `/register` y `/login` | Registro e inicio de sesión |
+| `could not find driver` | Falta la extensión `pdo_mysql` de PHP |
+| Error de conexión a la base | MySQL apagado, base inexistente o datos del `.env` distintos |
+| `No application encryption key` | Falta `php artisan key:generate` |
+| Página sin estilos | Falta `npm run build` |
+| `file_get_contents ... datos.sql` | El archivo de datos no está en el repositorio |
+| `composer install` falla por la versión de PHP | PHP menor a 8.2 |
 
-## Reiniciar la base de datos
+## Si usa Laravel Herd
 
-```bash
-php artisan migrate:fresh --seed
-```
+Puede clonar el proyecto dentro de su carpeta de Herd y no hace falta `php artisan serve`: el sitio queda en `http://rickandmorty-app2.test`. El resto de los pasos es igual.
 
-Borra todas las tablas, las recrea y vuelve a cargar los datos.
+## Qué hacer con lo que encuentre
 
-## Problemas frecuentes
-
-- **Página sin estilos:** falta ejecutar `npm run dev`.
-- **Error de conexión a la base:** MySQL apagado, o la base no existe, o el `.env` no coincide.
-- **`Class ... not found` tras actualizar:** ejecutar `composer install`.
+Cada fallo es información útil: algo que en tu equipo funciona por estar instalado o configurado a mano, y que en un equipo limpio no. Pasámelo y lo corregimos antes de la entrega, y de paso lo anotamos en el informe como evidencia de que el proyecto se probó en otro entorno.
