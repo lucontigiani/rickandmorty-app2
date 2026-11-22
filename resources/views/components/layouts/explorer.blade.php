@@ -13,6 +13,7 @@
                 <a href="/" class="font-bold text-lg">Rick & Morty Explorer</a>
                 <a href="{{ route('characters.index') }}" class="hover:underline">Personajes</a>
                 <a href="{{ route('episodes.index') }}" class="hover:underline">Episodios</a>
+                <a href="{{ route('locations.index') }}" class="hover:underline">Ubicaciones</a>
             </div>
 
             <div class="flex items-center gap-4">

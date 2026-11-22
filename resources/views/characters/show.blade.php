@@ -24,7 +24,7 @@
                 <dt class="text-gray-600">Origen</dt>
                 <dd>
                     @if ($character->origin)
-                        {{ $character->origin->name }}
+                        <a href="{{ route('locations.show', $character->origin) }}" class="hover:underline">{{ $character->origin->name }}</a>
                     @else
                         Desconocido
                     @endif
